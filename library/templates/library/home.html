@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}The Archive{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <p class="eyebrow">Est. in this codebase, 2024</p>
+    <h1>Borrow. Read. Return.</h1>
+    <p class="lede">
+        A small catalog for tracking who has what, when it's due, and what's
+        overdue &mdash; without the spreadsheet.
+    </p>
+    <div class="hero-actions">
+        {% if user.is_authenticated %}
+            <a class="btn" href="{% url 'book_list' %}">Browse the catalog</a>
+            <a class="btn btn-ghost" href="{% url 'profile' %}">Go to your profile</a>
+        {% else %}
+            <a class="btn" href="{% url 'register' %}">Register</a>
+            <a class="btn btn-ghost" href="{% url 'login' %}">Log in</a>
+        {% endif %}
+    </div>
+
+    <div class="feature-row">
+        <div class="feature">
+            <h3>Search &amp; filter</h3>
+            <p>Find a title instantly or narrow the shelf by publisher.</p>
+        </div>
+        <div class="feature">
+            <h3>Due dates that stick</h3>
+            <p>Every borrow gets a 7&#8209;day due date, tracked automatically.</p>
+        </div>
+        <div class="feature">
+            <h3>Fines, plainly stated</h3>
+            <p>Overdue items are flagged the moment they're late &mdash; no surprises.</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

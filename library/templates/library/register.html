@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Register · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">New member</p>
+    <h1>Register</h1>
+</div>
+
+<form method="POST" class="catalog-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Create account</button>
+</form>
+
+<p style="margin-top: 1rem;">Already a member? <a href="{% url 'login' %}">Log in</a></p>
+
+{% endblock %}

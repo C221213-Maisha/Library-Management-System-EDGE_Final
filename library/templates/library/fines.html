@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Fines · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">Your account</p>
+    <h1>Fines</h1>
+</div>
+
+{% if borrows %}
+<ul class="record-list">
+    {% for borrow in borrows %}
+    <li class="record-row">
+        <div>
+            <div class="title">{{ borrow.book.title }}</div>
+            <div class="sub">Was due {{ borrow.due_date }} &middot; {{ borrow.days_overdue }} day(s) late</div>
+        </div>
+        <span class="stamp stamp-fine">${{ borrow.fine_amount }}</span>
+    </li>
+    {% endfor %}
+</ul>
+<p style="margin-top: 1.5rem; font-family: var(--font-mono); font-weight: 600;">
+    Total owed: ${{ total_fines }}
+</p>
+{% else %}
+    <p class="empty-note">No fines on your account. Everything's back on time.</p>
+{% endif %}
+
+{% endblock %}

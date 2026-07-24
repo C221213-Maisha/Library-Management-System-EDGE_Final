@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Borrowed · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">Your account</p>
+    <h1>Borrowed books</h1>
+</div>
+
+{% if borrows %}
+<ul class="record-list">
+    {% for borrow in borrows %}
+    <li class="record-row">
+        <div>
+            <div class="title">{{ borrow.book.title }}</div>
+            <div class="sub">
+                {% if borrow.returned %}
+                    Returned {{ borrow.returned_date }}
+                {% else %}
+                    Due {{ borrow.due_date }}
+                {% endif %}
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:.75rem;">
+            {% if borrow.returned %}
+                {% if borrow.fine_amount %}
+                    <span class="stamp stamp-fine">Fine ${{ borrow.fine_amount }}</span>
+                {% else %}
+                    <span class="stamp stamp-ok">Returned</span>
+                {% endif %}
+            {% elif borrow.is_overdue %}
+                <span class="stamp stamp-overdue">Overdue &middot; ${{ borrow.fine_amount }}</span>
+                <a class="btn" href="{% url 'return_book' borrow.id %}">Return</a>
+            {% else %}
+                <span class="stamp stamp-due">Borrowed</span>
+                <a class="btn btn-ghost" href="{% url 'return_book' borrow.id %}">Return</a>
+            {% endif %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p class="empty-note">You haven't borrowed anything yet. <a href="{% url 'book_list' %}">Browse the catalog</a>.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{% if form.instance.id %}Edit book{% else %}Add a book{% endif %} · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">Catalog entry</p>
+    <h1>{% if form.instance.id %}Edit book{% else %}Add a book{% endif %}</h1>
+</div>
+
+<form method="POST" class="catalog-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Save</button>
+    <a class="btn btn-ghost" href="{% url 'book_list' %}">Cancel</a>
+</form>
+
+{% endblock %}

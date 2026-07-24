@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Profile · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">Signed in{% if user.is_staff %} &middot; staff{% endif %}</p>
+    <h1>Welcome, {{ user.username }}</h1>
+</div>
+
+<div class="dash-grid">
+    <div class="dash-card">
+        <h3>Catalog</h3>
+        <p>Search the full collection and borrow a title.</p>
+        <a class="btn btn-ghost" href="{% url 'book_list' %}">View books</a>
+    </div>
+    <div class="dash-card">
+        <h3>Borrowed books</h3>
+        <p>
+            {{ active_count }} currently checked out
+            {% if overdue_count %}&middot; <span style="color: var(--stamp-red);">{{ overdue_count }} overdue</span>{% endif %}
+        </p>
+        <a class="btn btn-ghost" href="{% url 'borrowed_books' %}">My borrowed books</a>
+    </div>
+    <div class="dash-card">
+        <h3>Fines</h3>
+        <p>{% if total_fines %}${{ total_fines }} currently owed{% else %}Nothing owed{% endif %}</p>
+        <a class="btn btn-ghost" href="{% url 'fines' %}">My fines</a>
+    </div>
+    {% if user.is_staff %}
+    <div class="dash-card" style="border-left-color: var(--brass);">
+        <h3>Manage catalog</h3>
+        <p>Add, edit, or retire books from the collection.</p>
+        <a class="btn btn-ghost" href="{% url 'book_add' %}">Add a book</a>
+    </div>
+    {% endif %}
+</div>
+
+<form method="post" action="{% url 'logout' %}" style="margin-top: 2rem;">
+    {% csrf_token %}
+    <button type="submit" class="link-button">Log out</button>
+</form>
+
+{% endblock %}

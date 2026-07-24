@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Books · The Archive{% endblock %}
+{% block content %}
+
+<div class="page-head">
+    <p class="eyebrow">Catalog</p>
+    <h1>Books</h1>
+</div>
+
+<form method="GET" action="{% url 'book_list' %}" class="inline-form">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by title">
+    <input type="text" name="publisher" value="{{ publisher_filter }}" placeholder="Filter by publisher">
+    <select name="category">
+        <option value="">All categories</option>
+        {% for value, label in categories %}
+            <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-ghost">Search</button>
+</form>
+
+{% if user.is_staff %}
+    <p><a class="btn" href="{% url 'book_add' %}">+ Add a book</a></p>
+{% endif %}
+
+{% if books %}
+<div class="catalog-grid">
+    {% for book in books %}
+        <article class="catalog-card">
+            <span class="call-number">{{ book.year_of_publishing }} &middot; {{ book.publisher }} &middot; {{ book.get_category_display }}</span>
+            <h3>{{ book.title }}</h3>
+            <p class="meta">
+                {{ book.authors }}<br>
+                {% if book.is_available %}
+                    <span class="stamp stamp-ok">{{ book.copies_available }} available</span>
+                {% else %}
+                    <span class="stamp stamp-overdue">All copies out</span>
+                {% endif %}
+            </p>
+            <div class="card-actions">
+                {% if user.is_authenticated %}
+                    {% if book.is_available %}
+                        <a class="btn" href="{% url 'borrow_book' book.id %}">Borrow</a>
+                    {% else %}
+                        <span class="btn btn-ghost" style="opacity:.5; cursor:not-allowed;">Unavailable</span>
+                    {% endif %}
+                {% else %}
+                    <a class="btn btn-ghost" href="{% url 'login' %}">Log in to borrow</a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a class="btn btn-ghost" href="{% url 'book_edit' book.id %}">Edit</a>
+                    <a class="btn btn-danger" href="{% url 'book_delete' book.id %}" onclick="return confirm('Delete \'{{ book.title|escapejs }}\'? This can\'t be undone.');">Delete</a>
+                {% endif %}
+            </div>
+        </article>
+    {% endfor %}
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="inline-form" style="margin-top: 2rem;">
+    {% if page_obj.has_previous %}
+        <a class="btn btn-ghost" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&publisher={{ publisher_filter }}&category={{ category_filter }}">&larr; Previous</a>
+    {% endif %}
+    <span class="nav-user" style="align-self:center; color:#6b6255;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a class="btn btn-ghost" href="?page={{ page_obj.next_page_number }}&q={{ query }}&publisher={{ publisher_filter }}&category={{ category_filter }}">Next &rarr;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+    <p class="empty-note">No books match that search. Try a different title, publisher, or category.</p>
+{% endif %}
+
+{% endblock %}
